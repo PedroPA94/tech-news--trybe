@@ -1,6 +1,19 @@
+import requests
+import time
+
+
 # Requisito 1
 def fetch(url):
-    """Seu código deve vir aqui!"""
+    headers = {"user-agent": "Fake user-agent"}
+    timeout = 3
+
+    try:
+        content = requests.get(url, headers=headers, timeout=timeout)
+        content.raise_for_status()
+        time.sleep(1)
+        return content.text
+    except (requests.ReadTimeout, requests.HTTPError):
+        return None
 
 
 # Requisito 2
