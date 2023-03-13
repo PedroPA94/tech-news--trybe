@@ -2,6 +2,7 @@ import requests
 import time
 import re
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -61,4 +62,20 @@ def scrape_news(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    next_page = 'https://blog.betrybe.com/'
+    news_url = []
+
+    while len(news_url) < amount and next_page:
+        page_content = fetch(next_page)
+        for page_url in scrape_updates(page_content):
+            if (len(news_url) < amount):
+                news_url.append(page_url)
+        next_page = scrape_next_page_link(page_content)
+
+    news = [
+        scrape_news(fetch(url))
+        for url in news_url
+    ]
+
+    create_news(news)
+    return news
